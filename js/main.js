@@ -113,14 +113,18 @@ function buildItems(apiCollections) {
       catId: c.category_id ?? null,
     }));
 
-  const filler = SHOWCASE.slice(0, Math.max(0, STATIC_IMAGES.length - live.length)).map(
-    (s, i) => ({
+  // Qolgan rasmlarni SHOWCASE sarlavhalari bilan to'ldiramiz. SHOWCASE
+  // rasmlardan kalta bo'lgani uchun uni aylanma tarzda qayta ishlatamiz.
+  const fillCount = Math.max(0, STATIC_IMAGES.length - live.length);
+  const filler = Array.from({ length: fillCount }, (_, i) => {
+    const s = SHOWCASE[i % SHOWCASE.length];
+    return {
       image: STATIC_IMAGES[(live.length + i) % STATIC_IMAGES.length],
       titleKey: s.titleKey,
       subKey: s.subKey,
       catId: null,
-    }),
-  );
+    };
+  });
 
   return [...live, ...filler];
 }
