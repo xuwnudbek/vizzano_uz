@@ -99,6 +99,10 @@ const SHOWCASE = [
   { titleKey: "s4.h", subKey: "s4.s" },
 ];
 
+// Filtr chiplarida ko'rsatilmaydigan kategoriyalar (nomi bo'yicha, registr
+// muhim emas). Mahsulotlar gridda qoladi — faqat chip yashiriladi.
+const HIDDEN_CATEGORIES = ["qishki"];
+
 let categories = [];
 let items = [];
 let activeCat = "all";
@@ -201,7 +205,9 @@ function loadCollections() {
     API.categories().catch(() => []),
     API.collections().catch(() => null),
   ]).then(([cats, cols]) => {
-    categories = Array.isArray(cats) ? cats : [];
+    categories = (Array.isArray(cats) ? cats : []).filter(
+      (c) => !HIDDEN_CATEGORIES.includes(String(c.name ?? "").trim().toLowerCase()),
+    );
     items = buildItems(Array.isArray(cols) ? cols : []);
     renderChips();
     renderGrid();
